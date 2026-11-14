@@ -1,8 +1,6 @@
 package com.mycloud.backend.folders.repository;
 
 import com.mycloud.backend.folders.entity.Folder;
-import com.mycloud.backend.users.entity.User;
-import com.mycloud.backend.users.repository.UserRepository;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -20,19 +18,14 @@ class FolderRepositoryTest {
     @Autowired
     private FolderRepository folderRepository;
 
-    @Autowired
-    private UserRepository userRepository;
-
     @Test
     void checksNamesWithoutCaseOnlyWithinTheSameParent() {
-        UUID id = UUID.randomUUID();
-        User owner = userRepository.save(new User(id, id + "@example.com", "Test", "Owner", "test-hash"));
-        Folder photos = folderRepository.save(new Folder(UUID.randomUUID(), "Ảnh", null, owner));
-        Folder other = folderRepository.save(new Folder(UUID.randomUUID(), "Khác", null, owner));
-        folderRepository.save(new Folder(UUID.randomUUID(), "2026", photos, owner));
+        Folder photos = folderRepository.save(new Folder(UUID.randomUUID(), "Ảnh", null));
+        Folder other = folderRepository.save(new Folder(UUID.randomUUID(), "Khác", null));
+        folderRepository.save(new Folder(UUID.randomUUID(), "2026", photos));
 
-        assertTrue(folderRepository.existsByOwnerAndParentAndNameIgnoreCase(owner, null, "ảnh"));
-        assertTrue(folderRepository.existsByOwnerAndParentAndNameIgnoreCase(owner, photos, "2026"));
-        assertFalse(folderRepository.existsByOwnerAndParentAndNameIgnoreCase(owner, other, "2026"));
+        assertTrue(folderRepository.existsByParentAndNameIgnoreCase(null, "ảnh"));
+        assertTrue(folderRepository.existsByParentAndNameIgnoreCase(photos, "2026"));
+        assertFalse(folderRepository.existsByParentAndNameIgnoreCase(other, "2026"));
     }
 }

@@ -1,7 +1,6 @@
 package com.mycloud.backend.files.entity;
 
 import com.mycloud.backend.folders.entity.Folder;
-import com.mycloud.backend.users.entity.User;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
@@ -11,7 +10,6 @@ import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 
 import java.time.Instant;
-import java.util.Objects;
 import java.util.UUID;
 
 @Entity
@@ -39,16 +37,11 @@ public class FileMetadata {
     @JoinColumn(name = "folder_id")
     private Folder folder;
 
-    // shortcut: legacy rows can lack an owner, enforce NOT NULL after explicit ownership migration.
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "owner_id", updatable = false)
-    private User owner;
-
     protected FileMetadata() {
     }
 
     public FileMetadata(UUID id, String name, Instant createdAt, Instant updatedAt,
-                        long sizeBytes, String contentType, Folder folder, User owner) {
+                        long sizeBytes, String contentType, Folder folder) {
         this.id = id;
         this.name = name;
         this.createdAt = createdAt;
@@ -56,7 +49,6 @@ public class FileMetadata {
         this.sizeBytes = sizeBytes;
         this.contentType = contentType;
         this.folder = folder;
-        this.owner = Objects.requireNonNull(owner);
     }
 
     public UUID getId() {

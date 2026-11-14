@@ -1,6 +1,5 @@
 package com.mycloud.backend.folders.entity;
 
-import com.mycloud.backend.users.entity.User;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
@@ -9,7 +8,6 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 
-import java.util.Objects;
 import java.util.UUID;
 
 @Entity
@@ -26,19 +24,13 @@ public class Folder {
     @JoinColumn(name = "parent_id")
     private Folder parent;
 
-    // shortcut: legacy rows can lack an owner, enforce NOT NULL after explicit ownership migration.
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "owner_id", updatable = false)
-    private User owner;
-
     protected Folder() {
     }
 
-    public Folder(UUID id, String name, Folder parent, User owner) {
+    public Folder(UUID id, String name, Folder parent) {
         this.id = id;
         this.name = name;
         this.parent = parent;
-        this.owner = Objects.requireNonNull(owner);
     }
 
     public UUID getId() {
