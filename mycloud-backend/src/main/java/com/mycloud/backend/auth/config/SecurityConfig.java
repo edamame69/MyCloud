@@ -11,10 +11,9 @@ import org.springframework.security.web.SecurityFilterChain;
 @Configuration
 public class SecurityConfig {
     @Bean
-    public SecurityFilterChain usersSecurityFilterChain(HttpSecurity http, JsonSecurityErrorHandler errors) throws Exception {
+    public SecurityFilterChain privateApiSecurityFilterChain(HttpSecurity http, JsonSecurityErrorHandler errors) throws Exception {
         return http
-                // First JWT integration is scoped to users; file/folder ownership comes next.
-                .securityMatcher("/api/users/**")
+                .securityMatcher("/api/users/**", "/api/files/**", "/api/folders/**")
                 // This chain uses explicit Bearer headers, not browser-supplied session cookies.
                 .csrf(AbstractHttpConfigurer::disable)
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))

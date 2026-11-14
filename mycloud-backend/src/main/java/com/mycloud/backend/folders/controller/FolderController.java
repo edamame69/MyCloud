@@ -7,6 +7,8 @@ import com.mycloud.backend.folders.service.FolderService;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -28,15 +30,15 @@ public class FolderController {
     }
 
     @GetMapping
-    public List<FolderResponse> findAll(@RequestParam(required = false) UUID parentId) {
-        return folderService.findAll(parentId).stream()
+    public List<FolderResponse> findAll(@RequestParam(required = false) UUID parentId, @AuthenticationPrincipal Jwt jwt) {
+        return folderService.findAll(parentId, jwt).stream()
                 .map(FolderResponse::from)
                 .toList();
     }
 
     @PostMapping
-    public ResponseEntity<FolderResponse> create(@Valid @RequestBody CreateFolderRequest request) {
-        Folder folder = folderService.create(request.name(), request.parentId());
+    public ResponseEntity<FolderResponse> create(@Valid @RequestBody CreateFolderRequest request, @AuthenticationPrincipal Jwt jwt) {
+        Folder folder = folderService.create(request.name(), request.parentId(), jwt);
         return ResponseEntity.status(HttpStatus.CREATED).body(FolderResponse.from(folder));
     }
 }

@@ -19,8 +19,11 @@ public class UserService {
 
     @Transactional(readOnly = true)
     public UserResponse getCurrentUser(UUID userId) {
-        User user = userRepository.findById(userId)
+        return UserResponse.from(requireUser(userId));
+    }
+
+    public User requireUser(UUID userId) {
+        return userRepository.findById(userId)
                 .orElseThrow(InvalidSessionException::new);
-        return UserResponse.from(user);
     }
 }

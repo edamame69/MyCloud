@@ -9,6 +9,12 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 @RestControllerAdvice
 public class ItemExceptionHandler {
 
+    @ExceptionHandler(ItemAccessDeniedException.class)
+    public ResponseEntity<ItemErrorResponse> handleAccessDenied(ItemAccessDeniedException exception) {
+        return ResponseEntity.status(HttpStatus.FORBIDDEN)
+                .body(new ItemErrorResponse(exception.getMessage()));
+    }
+
     @ExceptionHandler(ItemNameConflictException.class)
     public ResponseEntity<ItemErrorResponse> handleNameConflict(ItemNameConflictException exception) {
         return ResponseEntity.status(HttpStatus.CONFLICT)

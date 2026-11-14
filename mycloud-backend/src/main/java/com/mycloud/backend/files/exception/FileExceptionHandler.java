@@ -1,7 +1,6 @@
 package com.mycloud.backend.files.exception;
 
 import com.mycloud.backend.files.dto.FileErrorResponse;
-import com.mycloud.backend.folders.dto.FolderErrorResponse;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -20,12 +19,5 @@ public class FileExceptionHandler {
     public ResponseEntity<FileErrorResponse> handleFolderNotFound(FileFolderNotFoundException exception) {
         return ResponseEntity.status(HttpStatus.NOT_FOUND)
                 .body(new FileErrorResponse(exception.getMessage()));
-    }
-
-    @ExceptionHandler(FileNameConflictException.class)
-    public ResponseEntity<FileErrorResponse> handleNameConflict(FileNameConflictException exception) {
-        return ResponseEntity.status(HttpStatus.CONFLICT)
-                .body(new FileErrorResponse(exception.getMessage()));
-
     }
 }

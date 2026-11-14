@@ -8,6 +8,8 @@ import com.mycloud.backend.files.service.FileService;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -31,28 +33,28 @@ public class FileController {
     }
 
     @GetMapping
-    public List<FileResponse> findAll(@RequestParam(required = false) UUID folderId) {
-        return fileService.findAll(folderId).stream()
+    public List<FileResponse> findAll(@RequestParam(required = false) UUID folderId, @AuthenticationPrincipal Jwt jwt) {
+        return fileService.findAll(folderId, jwt).stream()
                 .map(FileResponse::from)
                 .toList();
     }
 
     @PostMapping
     public ResponseEntity<FileResponse> create(
-            @Valid @RequestBody CreateFileRequest request) {
-        FileMetadata file = fileService.create(request.name(), request.sizeBytes(), request.contentType(), request.folderId());
+            @Valid @RequestBody CreateFileRequest request, @AuthenticationPrincipal Jwt jwt) {
+        FileMetadata file = fileService.create(request.name(), request.sizeBytes(), request.contentType(), request.folderId(), jwt);
         return ResponseEntity.status(HttpStatus.CREATED).body(FileResponse.from(file));
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<FileResponse> findById(@PathVariable UUID id) {
-        FileMetadata file = fileService.findById(id);
+    public ResponseEntity<FileResponse> findById(@PathVariable UUID id, @AuthenticationPrincipal Jwt jwt) {
+        FileMetadata file = fileService.findById(id, jwt);
         return ResponseEntity.ok(FileResponse.from(file));
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<DeleteFileResponse> delete(@PathVariable UUID id) {
-        fileService.delete(id);
+    public ResponseEntity<DeleteFileResponse> delete(@PathVariable UUID id, @AuthenticationPrincipal Jwt jwt) {
+        fileService.delete(id, jwt);
         return ResponseEntity.ok(new DeleteFileResponse("Xoá tệp thành công"));
     }
 }

@@ -14,10 +14,4 @@ public class FolderExceptionHandler {
         return ResponseEntity.status(HttpStatus.NOT_FOUND)
                 .body(new FolderErrorResponse(exception.getMessage()));
     }
-
-    @ExceptionHandler(FolderNameConflictException.class)
-    public ResponseEntity<FolderErrorResponse> handleNameConflict(FolderNameConflictException exception) {
-        return ResponseEntity.status(HttpStatus.CONFLICT)
-                .body(new FolderErrorResponse(exception.getMessage()));
-    }
 }

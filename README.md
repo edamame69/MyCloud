@@ -1,21 +1,21 @@
 # MyCloud
 
-MyCloud is an ongoing personal cloud storage project built with Java, Spring Boot, Spring Security, JPA/Hibernate, and PostgreSQL. **Phase 3 learning checkpoint: before file and folder ownership.** The current backend manages file metadata and folders.
+MyCloud is an ongoing personal cloud storage project built with Java, Spring Boot, Spring Security, JPA/Hibernate, and PostgreSQL. Phase 3 adds authentication and ownership checks to the file metadata and folder APIs.
 
 ## Implemented
 
 - Register and log in with Argon2id password hashing and signed JWT access tokens. `GET /api/users/me` returns the authenticated profile.
-- Create and list nested folders. Create, list, read, and delete file metadata.
-- Verify authentication and PostgreSQL persistence with automated tests.
+- Create and list nested folders. Create, list, read, and delete file metadata. Each account can access only its own files and folders.
+- Automated tests verify authentication, access across accounts, and PostgreSQL persistence.
 
 | Method | Endpoint | Access |
 | --- | --- | --- |
 | GET | `/api/health` | Public |
 | POST | `/api/auth/register`, `/api/auth/login` | Public |
 | GET | `/api/users/me` | Bearer JWT |
-| GET, POST | `/api/folders` | Local development only |
-| GET, POST | `/api/files` | Local development only |
-| GET, DELETE | `/api/files/{id}` | Local development only |
+| GET, POST | `/api/folders` | Bearer JWT, owner access |
+| GET, POST | `/api/files` | Bearer JWT, owner access |
+| GET, DELETE | `/api/files/{id}` | Bearer JWT, owner access |
 
 ## Run locally
 
@@ -32,12 +32,10 @@ mvn clean test
 mvn spring-boot:run
 ```
 
-Once the app starts, call `GET http://localhost:8080/api/health`. Register with `email`, `firstName`, `lastName`, and `password`. Log in with `email` and `password`, then send the returned `accessToken` as `Authorization: Bearer <accessToken>` to the protected endpoints. See [backend setup](mycloud-backend/README.md) for configuration. Use this checkpoint locally while file and folder access controls are being developed.
+Once the app starts, call `GET http://localhost:8080/api/health`. Register with `email`, `firstName`, `lastName`, and `password`. Log in with `email` and `password`, then send the returned `accessToken` as `Authorization: Bearer <accessToken>` to the protected endpoints. See [backend setup](mycloud-backend/README.md) for configuration.
 
 ## Planned
 
-- **Phase 3:** protect file and folder endpoints and enforce ownership for metadata access.
-
-- **Phase 4:** private S3 object storage and presigned upload/download URLs for file contents.
+- **Phase 4:** private Amazon S3 storage and presigned upload and download URLs for file contents.
 - **Phase 5:** a minimal Next.js file manager.
 - **Phase 6:** an HTTPS deployment with a separate recruiter demo environment.
